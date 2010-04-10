@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="DbDoc" default="build" basedir=".">
+
+	<!-- Configure path to Libs -->
+	<!-- <property name="oracle.jdbc" location="C:/programs/eclipse-jee-galileo/plugins/oracle.database.driver.jdk14_10.2.0.1" />
+  -->
+	<property name="oracle.jdbc" location="C:/install/dataBases/oracle/lib" />
+	<property name="dbdoc.lib" location="C:/programs/eclipse-jee-galileo/workspace_pike/DbDoc" />
+
+	<path id="project.class.path">
+		<pathelement location="bin" />
+		<pathelement location="${oracle.jdbc}/ojdbc14.jar" />
+		<pathelement location="${dbdoc.lib}/dbdoclib.jar" />
+	</path>
+
+  <target name="clean" description="Cleans this project">
+    <delete dir="bin" failonerror="false" />
+    <delete file="dbdoccmd.jar" failonerror="false" />
+  </target>
+
+	<!--
+	<target name="res" description="Copy resources from DbDoc">
+		<copy todir="res/html">
+			<fileset file="${dbdoc.lib}/war/DbDoc.css" />
+		</copy>
+	</target>
+  -->
+	
+	<target name="javac" depends="clean" description="Compile java source">
+		<mkdir dir="bin" />
+		<javac srcdir="src" includes="**" encoding="utf-8" destdir="bin" source="1.6" target="1.6" nowarn="true" debug="true" debuglevel="lines,vars,source">
+			<classpath refid="project.class.path" />
+		</javac>
+		<copy todir="bin">
+      <fileset dir="src" excludes="**/*.java" />
+		</copy>
+    <copy todir="bin/res">
+      <fileset dir="res" />
+    </copy>
+    <copy todir="bin/res">
+      <fileset dir="${dbdoc.lib}/war/WEB-INF/classes/res" />
+    </copy>
+    <copy todir="bin/res/html">
+      <fileset file="${dbdoc.lib}/war/DbDoc.css" />
+    </copy>
+	</target>
+
+	<target name="build" depends="javac" description="Build this project" />
+
+	<!-- jar cvfm dbdoccmd.jar manifest.txt  DbDocCmd.class DbDoc.css lib -->
+	<target name="dbdoccmd_jar" description="Create a jar file">
+		<jar destfile="dbdoccmd.jar">
+			<manifest>
+				<attribute name="Class-Path" value="lib/dbdoclib.jar lib/ojdbc14.jar" />
+				<attribute name="Main-Class" value="Main" />
+			</manifest>
+      <zipfileset dir="bin" includes="*.class"  />
+      <zipfileset dir="bin/info/vstour/dbdoc" prefix="info/vstour/dbdoc"/>
+		</jar>
+	</target>
+
+	<target name="dbdoccmd_zip" depends="dbdoccmd_jar" description="Create a zip file with libraries">
+		<zip destfile="dbdoccmd.zip">
+			<zipfileset file="dbdoccmd.jar" />
+			<zipfileset file="${oracle.jdbc}/ojdbc14.jar" prefix="lib" />
+      <zipfileset file="${dbdoc.lib}/dbdoclib.jar" prefix="lib" />
+      <zipfileset dir="bin/res" prefix="res" />
+		</zip>
+	</target>
+
+</project>

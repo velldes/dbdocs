@@ -1,0 +1,60 @@
+/* css rules */
+body {
+	background: white;
+}
+
+/* Controls style */
+.menu {
+	width: 100%;
+	height: 100%;
+	background-color: #AFAFAF;
+}
+
+.searchTextBox {
+  width: 250px;
+}
+
+.tree {
+	width: 250px;
+	background-color: #EFEFEF;
+}
+
+/* javaDoc summary table styles */
+#smTable {
+	width: 100%;
+}
+
+#smTable th {
+	align: left;
+	background-color: #AFAFAF;
+	font-size: 12pt;
+}
+
+#smTable tr.alt td {
+	background-color: #EFEFEF;
+}
+
+/* markup styles*/
+.docs {
+	color: #0000FF;
+}
+
+.comments {
+	color: #228B22;
+}
+
+.value {
+	color: #FF3333;
+}
+
+.error {
+	color: #FF5F5F;
+}
+
+.kwd {
+	font-weight: bold;
+}
+
+.fnd {
+	background-color: #66FF99;
+}

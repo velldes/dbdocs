@@ -1,0 +1,102 @@
+<html>
+  <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+  <link type='text/css' rel='stylesheet' href='../DbDoc.css'>
+<body>
+<h3>AP_USERS_TA</h3><table id='smTable'><tbody><tr class='smth'><th colspan='2'>Summary</th></tr><tr><td></td><td><pre>    ap_users_ta package
+  </span>
+</pre></td></tr><tr class='alt'><td><a href='#apiver456'>apiver</a></td><td>   apiver - revision </span>
+</td></tr><tr><td><a href='#apiaut81'>apiaut</a></td><td>   apiaut - author ("All Comments" mode) </span>
+</td></tr><tr class='alt'><td><a href='#vgc_null_date553'>vgc_null_date</a></td><td>   null date </span>
+</td></tr><tr><td><a href='#apusers348'>apusers</a></td><td> ROW type of the table APUSERS
+   </span>
+</td></tr><tr class='alt'><td><a href='#user_rec942'>user_rec</a></td><td> Record type of the table APUSERS
+   </span>
+</td></tr><tr><td><a href='#user_cur307'>user_cur</a></td><td> Cursor
+   </span>
+</td></tr><tr class='alt'><td><a href='#user_tab570'>user_tab</a></td><td> PL/SQL table
+   </span>
+</td></tr><tr><td><a href='#ins932'>ins</a></td><td> Insert rows
+  </span>
+</td></tr><tr class='alt'><td><a href='#upd172'>upd</a></td><td> Update rows
+   </span>
+</td></tr><tr><td><a href='#del727'>del</a></td><td> Delete rows
+   </span>
+</td></tr><tr class='alt'><td><a href='#slct497'>slct</a></td><td> Returns row based on ROWID
+   </span>
+</td></tr><tr><td><a href='#exist_rec914'>exist_rec</a></td><td> Checks if the row exists based on primary key
+   </span>
+</td></tr><tr class='alt'><td><a href='#qry199'>qry</a></td><td> Returns REF CURSOR based on defined fields in the input record
+   </span>
+</td></tr><tr><td><a href='#qry797'>qry</a></td><td> Returns REF CURSOR based on input parameters
+   </span>
+</td></tr><tr class='alt'><td></td><td><pre></pre></td></tr></tbody></table><hr><h3><a name='apiver456'>apiver</a></h3><pre>  <b>apiver</b> CONSTANT VARCHAR2(100) := <span class='value'>'$Revision: 1 $'</span>;</pre><dl>
+<dd>   apiver - revision </span>
+</dd><dd><p></dd></dl>
+<hr><h3><a name='apiaut81'>apiaut</a></h3><pre>  <b>apiaut</b> CONSTANT VARCHAR2(100) := <span class='value'>'$Author: Author $'</span>;</pre><dl>
+<dd>   apiaut - author ("All Comments" mode) </span>
+</dd><dd><p></dd></dl>
+<hr><h3><a name='vgc_null_date553'>vgc_null_date</a></h3><pre>  <b>vgc_null_date</b> CONSTANT DATE := TO_DATE(<span class='value'>'01.01.1970'</span>,<span class='value'>'DD.MM.YYYY'</span>);</pre><dl>
+<dd>   null date </span>
+</dd><dd><p></dd></dl>
+<hr><h3><a name='apusers348'>apusers</a></h3><pre>  user_row <b>apusers</b> %ROWTYPE;</pre><dl>
+<dd> ROW type of the table APUSERS
+   </span>
+</dd><dd><p></dd></dl>
+<hr><h3><a name='user_rec942'>user_rec</a></h3><pre>  TYPE <b>user_rec</b> IS RECORD (<span class='comments'>-- test
+</span>      the_rowid ROWID
+    , id          user_row.id          %TYPE 
+    , firstname   user_row.firstname   %TYPE 
+    , lastname    user_row.lastname    %TYPE 
+    , country     user_row.country     %TYPE 
+    , create_date user_row.create_date %TYPE 
+  );</pre><dl>
+<dd> Record type of the table APUSERS
+   </span>
+</dd><dd><p></dd></dl>
+<hr><h3><a name='user_cur307'>user_cur</a></h3><pre>  TYPE <b>user_cur</b> IS REF CURSOR RETURN user_rec;</pre><dl>
+<dd> Cursor
+   </span>
+</dd><dd><p></dd></dl>
+<hr><h3><a name='user_tab570'>user_tab</a></h3><pre>  TYPE <b>user_tab</b> IS TABLE OF user_rec INDEX BY BINARY_INTEGER;</pre><dl>
+<dd> PL/SQL table
+   </span>
+</dd><dd><p></dd></dl>
+<hr><h3><a name='ins932'>ins</a></h3><pre>  PROCEDURE <b>ins</b>(p_tab IN OUT NOCOPY user_tab);</pre><dl>
+<dd> Insert rows
+  </span>
+</dd><dd><p><dt><b>Parameters:</b></dt><dd> p_tab - PL/SQL table</dd></dd></dl>
+<hr><h3><a name='upd172'>upd</a></h3><pre>  PROCEDURE <b>upd</b>(p_tab IN OUT NOCOPY user_tab);</pre><dl>
+<dd> Update rows
+   </span>
+</dd><dd><p><dt><b>Parameters:</b></dt><dd> p_tab - PL/SQL table</dd></dd></dl>
+<hr><h3><a name='del727'>del</a></h3><pre>  PROCEDURE <b>del</b>(p_tab IN OUT NOCOPY user_tab);</pre><dl>
+<dd> Delete rows
+   </span>
+</dd><dd><p><dt><b>Parameters:</b></dt><dd> p_tab - PL/SQL table</dd></dd></dl>
+<hr><h3><a name='slct497'>slct</a></h3><pre>  PROCEDURE <b>slct</b>(p_rec IN OUT NOCOPY user_rec);</pre><dl>
+<dd> Returns row based on ROWID
+   </span>
+</dd><dd><p><dt><b>Parameters:</b></dt><dd> p_rec - definition record</dd></dd></dl>
+<hr><h3><a name='exist_rec914'>exist_rec</a></h3><pre>  FUNCTION <b>exist_rec</b>(p_rec IN user_rec) RETURN BOOLEAN;</pre><dl>
+<dd> Checks if the row exists based on primary key
+   </span>
+</dd><dd><p><dt><b>Parameters:</b></dt><dd> p_rec - record with defined fields</dd></dd></dl>
+<hr><h3><a name='qry199'>qry</a></h3><pre>  PROCEDURE <b>qry</b>(p_cur IN OUT user_cur, p_rec IN user_rec);</pre><dl>
+<dd> Returns REF CURSOR based on defined fields in the input record
+   </span>
+</dd><dd><p><dt><b>Parameters:</b></dt><dd> p_cur - ref cursor</dd><dd> p_rec - record with defined fields</dd></dd></dl>
+<hr><h3><a name='qry797'>qry</a></h3><pre>  PROCEDURE <b>qry</b> (
+      p_cur IN OUT user_cur
+    , p_id          user_row.id          %TYPE DEFAULT NULL
+    , p_firstname   user_row.firstname   %TYPE DEFAULT NULL
+    , p_lastname    user_row.lastname    %TYPE DEFAULT NULL
+    , p_country     user_row.country     %TYPE DEFAULT NULL
+    , p_create_date user_row.create_date %TYPE DEFAULT NULL
+  );</pre><dl>
+<dd> Returns REF CURSOR based on input parameters
+   </span>
+</dd><dd><p><dt><b>Parameters:</b></dt><dd> p_cur - ref cursor</dd><dd> p_id          - User ID</dd><dd> p_firstname   - User first name</dd><dd> p_lastname    - User last name</dd><dd> p_country     - User country</dd><dd> p_create_date - User creation date</dd></dd></dl>
+<hr>
+<br>
+</body>
+</html>
