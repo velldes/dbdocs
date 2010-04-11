@@ -1,0 +1,5 @@
+#summary #summary Creates javadoc-style HTML documentation for a database schema objects.
+
+== DbDoc screen shot ==
+
+http://dbdocs.googlecode.com/svn/trunk/DbDoc/example/dbdoc.PNG
