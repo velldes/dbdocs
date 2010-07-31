@@ -28,36 +28,36 @@ import java.util.Date;
 
 public class DbDoc {
 
-	DbDocRes	        dbDocRes;
+	DbDocRes	          dbDocRes;
 
 	public final String	OBJECTS	          = "OBJECTS";
 	public final String	PACKAGE_OBJ	      = "PACKAGE";
-	public final String	TABLE_OBJ	      = "TABLE";
-	public final String	TABLE_COL_OBJ	  = "TABLE_COLUMNS";
-	public final String	TABLE_CON_OBJ	  = "TABLE_CONSTRAINTS";
+	public final String	TABLE_OBJ	        = "TABLE";
+	public final String	TABLE_COL_OBJ	    = "TABLE_COLUMNS";
+	public final String	TABLE_CON_OBJ	    = "TABLE_CONSTRAINTS";
 	public final String	TABLE_CON_COL_OBJ	= "TABLE_CONSTRAINTS_COLUMNS";
-	public final String	TABLE_IND_OBJ	  = "TABLE_INDEXES";
+	public final String	TABLE_IND_OBJ	    = "TABLE_INDEXES";
 	public final String	TABLE_IND_COL_OBJ	= "TABLE_INDEXES_COLUMNS";
 
 	public final String	OWNER_PARAM	      = ":owner";
-	public final String	OBJECT_PARAM	  = ":type";
+	public final String	OBJECT_PARAM	    = ":type";
 	public final String	NAME_PARAM	      = ":name";
 	public final String	OTHER_NAME_PARAM	= ":other_name";
 
 	public final String	NAME_TOKEN	      = "#NAME#";
-	public final String	DIR_TOKEN	      = "#DIR#";
-	public final String	DOC_TOKEN	      = "#DOC#";
-	public final String	HREF	          = "<a href ='" + DIR_TOKEN + NAME_TOKEN + ".html' target ='" + DOC_TOKEN + "'>"
-	                                              + NAME_TOKEN + "</a><br>";
+	public final String	DIR_TOKEN	        = "#DIR#";
+	public final String	DOC_TOKEN	        = "#DOC#";
+	public final String	HREF	            = "<a href ='" + DIR_TOKEN + NAME_TOKEN + ".html' target ='" + DOC_TOKEN + "'>"
+	                                          + NAME_TOKEN + "</a><br>";
 
 	private String	    filter;
 	private String	    objects;
 	private int	        viewId;
 	private boolean	    allCommentsAsDoc;
 
-	private Statement	stmt;
-	private Statement	stmtDoc;
-	private Statement	stmtTmp;
+	private Statement	  stmt;
+	private Statement	  stmtDoc;
+	private Statement	  stmtTmp;
 
 	public DbDoc(String propsFileName) throws IOException {
 
@@ -176,7 +176,7 @@ public class DbDoc {
 						doc = doc + getHtml(TABLE_IND_OBJ, itemName, query);
 					}
 				}
-				doc = "<h3>" + itemName + "</h3>" + doc;
+				doc = "<h3>" + itemName + "</h3>" + doc + Converter.DBDOC_LINK;
 				dbDocRes.saveToFile(docDir + "/" + itemName.toLowerCase() + ".html", docHtmlTmp.replace(DOC_TOKEN, doc));
 			}
 			String resource = dbDocRes.CONTENTS_DETAIL_HTML;
@@ -259,8 +259,7 @@ public class DbDoc {
 
 			}
 			if (!tr.isEmpty())
-				doc = "<h3>" + header + "</h3><table id='smTable'><tbody><tr class='smth'>" + th + "</tr>" + tr
-				        + "</tbody></table><hr>";
+				doc = "<h3>" + header + "</h3><table id='smTable'><tbody><tr class='smth'>" + th + "</tr>" + tr + "</tbody></table><hr>";
 		}
 		return doc;
 	}
