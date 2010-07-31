@@ -117,7 +117,7 @@ public class DocServiceImpl extends RemoteServiceServlet implements DocService {
 				e.printStackTrace();
 			}
 		}
-		return doc;
+		return doc + Converter.DBDOC_LINK;
 	}
 	@Override
 	public String[] getObjects(String name) {
@@ -232,8 +232,7 @@ public class DocServiceImpl extends RemoteServiceServlet implements DocService {
 			stmtCol.close();
 
 			if (!tr.isEmpty())
-				doc = "<h3>" + header + "</h3><table id='smTable'><tbody><tr class='smth'>" + th + "</tr>" + tr
-				        + "</tbody></table><hr>";
+				doc = "<h3>" + header + "</h3><table id='smTable'><tbody><tr class='smth'>" + th + "</tr>" + tr + "</tbody></table><hr>";
 		}
 		return doc;
 	}
