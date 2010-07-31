@@ -16,13 +16,13 @@
 package info.vstour.dbdoc.server;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -68,7 +68,7 @@ public abstract class Resource {
 	 * Reads a properties file and returns Java Properties object.
 	 * 
 	 * @param url
-	 *            Uniform Resource Locator.
+	 *          Uniform Resource Locator.
 	 * 
 	 * @return Properties object
 	 * @throws IOException
@@ -87,7 +87,7 @@ public abstract class Resource {
 	 * Returns content of the file.
 	 * 
 	 * @param url
-	 *            Uniform Resource Locator.
+	 *          Uniform Resource Locator.
 	 * 
 	 * @return Content of the file
 	 * @throws IOException
@@ -103,13 +103,13 @@ public abstract class Resource {
 	 * system.
 	 * 
 	 * @param name
-	 *            the system-dependent file name.
+	 *          the system-dependent file name.
 	 * @param text
-	 *            Text
+	 *          Text
 	 * @throws IOException
 	 */
 	public void saveToFile(String name, String text) throws IOException {
-		BufferedWriter out = new BufferedWriter(new FileWriter(name));
+		OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(name), "UTF-8");
 		try {
 			out.write(text);
 		}
@@ -119,13 +119,13 @@ public abstract class Resource {
 	}
 
 	/**
-	 * Splits the text by following regexp --.* (two hyphens at the beginning of the line
-	 * ) to get key==value array of strings. Then puts key, value pair into the map.
+	 * Splits the text by following regexp --.* (two hyphens at the beginning of the line )
+	 * to get key==value array of strings. Then puts key, value pair into the map.
 	 * 
 	 * Text must have two hyphens at the beginning of the line before each key, value.
 	 * 
 	 * @param String
-	 *            resource
+	 *          resource
 	 * @return Map<String, String>
 	 */
 	private Map<String, String> getMap(String resource) {

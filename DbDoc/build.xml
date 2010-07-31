@@ -4,9 +4,9 @@
   <property name="gwt.args" value="" />
 
   <!-- Configure path to GWT SDK -->
-  <property name="gwt.sdk" location="C:/programs/eclipse-jee-galileo/plugins/com.google.gwt.eclipse.sdkbundle.2.0.3_2.0.3.v201002191036/gwt-2.0.3" />
+  <property name="gwt.sdk" location="c:/programs/eclipse-jee-helios/plugins/com.google.gwt.eclipse.sdkbundle.2.0.4_2.0.4.v201006301309/gwt-2.0.4" />
   <!-- Configure path to Libs -->
-  <property name="oracle.jdbc" location="C:/programs/eclipse-jee-galileo/plugins/oracle.database.driver.jdk14_10.2.0.1" />
+  <property name="oracle.jdbc" location="C:/programs/eclipse-jee-helios/UserLibrary/oracle" />
 
   <path id="project.class.path">
     <pathelement location="war/WEB-INF/classes"/>
