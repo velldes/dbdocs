@@ -17,6 +17,12 @@ FROM user_source
 WHERE type  = 'PACKAGE'
   AND name  = :name
 ORDER BY line
+-- PACKAGE BODY
+PACKAGE BODY==SELECT text
+FROM user_source
+WHERE type  = 'PACKAGE BODY'
+  AND name  = :name
+ORDER BY line
 -- PROCEDURE
 PROCEDURE==SELECT text
 FROM user_source
