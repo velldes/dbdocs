@@ -37,12 +37,14 @@ public class Main {
 	}
 	private static void printHelp() {
 		System.out.println("Dependencies:");
-		System.out.println("  Create properties file 'connection_name.properties'");
+		System.out.println("  Create properties file '<connection_name>.properties'");
 		System.out.println("  and copy to res/props/ folder");
 		System.out.println("Usage:");
 		System.out.println("  java -jar dbdoccmd.jar <connection_name>");
 		System.out.println("");
 		System.out.println("  -h or /h          - shows this help.");
 		System.out.println("  <connection_name> - properties file name without extension.");
+		System.out.println("--");
+		System.out.println("Project web is http://code.google.com/p/dbdocs/");
 	}
 }

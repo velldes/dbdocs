@@ -16,6 +16,8 @@
 package info.vstour.dbdoc;
 
 import info.vstour.dbdoc.shared.Converter;
+import info.vstour.dbdoc.shared.PropsConstants;
+import info.vstour.dbdoc.shared.SqlConstants;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,26 +32,10 @@ public class DbDoc {
 
 	DbDocRes	          dbDocRes;
 
-	public final String	OBJECTS	          = "OBJECTS";
-	public final String	PACKAGE_OBJ	      = "PACKAGE";
-	public final String	TABLE_OBJ	        = "TABLE";
-	public final String	TABLE_COL_OBJ	    = "TABLE_COLUMNS";
-	public final String	TABLE_CON_OBJ	    = "TABLE_CONSTRAINTS";
-	public final String	TABLE_CON_COL_OBJ	= "TABLE_CONSTRAINTS_COLUMNS";
-	public final String	TABLE_IND_OBJ	    = "TABLE_INDEXES";
-	public final String	TABLE_IND_COL_OBJ	= "TABLE_INDEXES_COLUMNS";
+	public final String	HREF	= "<a href ='" + SqlConstants.DIR_TOKEN + SqlConstants.NAME_TOKEN + ".html' target ='"
+	                             + SqlConstants.DOC_TOKEN + "'>" + SqlConstants.NAME_TOKEN + "</a><br>";
 
-	public final String	OWNER_PARAM	      = ":owner";
-	public final String	OBJECT_PARAM	    = ":type";
-	public final String	NAME_PARAM	      = ":name";
-	public final String	OTHER_NAME_PARAM	= ":other_name";
-
-	public final String	NAME_TOKEN	      = "#NAME#";
-	public final String	DIR_TOKEN	        = "#DIR#";
-	public final String	DOC_TOKEN	        = "#DOC#";
-	public final String	HREF	            = "<a href ='" + DIR_TOKEN + NAME_TOKEN + ".html' target ='" + DOC_TOKEN + "'>"
-	                                          + NAME_TOKEN + "</a><br>";
-
+	private String	    owner;
 	private String	    filter;
 	private String	    objects;
 	private int	        viewId;
@@ -65,18 +51,19 @@ public class DbDoc {
 		baseUrl = baseUrl.substring(0, baseUrl.lastIndexOf("/") + 1);
 		dbDocRes = new DbDocRes(baseUrl, propsFileName);
 
-		setFilter(dbDocRes.getProps().getProperty("Filter"));
-		setViewId(dbDocRes.getProps().getProperty("View"));
-		setAllCommentsAsDoc(dbDocRes.getProps().getProperty("AllCommentsAsDoc"));
-		setObjects(dbDocRes.getProps().getProperty("Objects"));
+		setOwner(dbDocRes.getProps().getProperty(PropsConstants.OWNER));
+		setFilter(dbDocRes.getProps().getProperty(PropsConstants.FILTER));
+		setViewId(dbDocRes.getProps().getProperty(PropsConstants.VIEW));
+		setAllCommentsAsDoc(dbDocRes.getProps().getProperty(PropsConstants.ALL_COMMENTS_AS_DOC));
+		setObjects(dbDocRes.getProps().getProperty(PropsConstants.OBJECTS));
 
 	}
 
 	public void createDoc() throws Exception {
 		Connection conn = null;
+		ConnectionManager connManager = new ConnectionManager(dbDocRes.getProps());
+		conn = connManager.getConnection();
 		try {
-			ConnectionManager connManager = new ConnectionManager(dbDocRes.getProps());
-			conn = connManager.getConnection();
 			if (conn != null) {
 				stmt = conn.createStatement();
 				stmtDoc = conn.createStatement();
@@ -88,9 +75,9 @@ public class DbDoc {
 					saveDoc(objects[i].trim());
 
 					String link = HREF;
-					link = link.replace(DIR_TOKEN, "");
-					link = link.replace(NAME_TOKEN, objects[i].toLowerCase().trim());
-					link = link.replace(DOC_TOKEN, "detail");
+					link = link.replace(SqlConstants.DIR_TOKEN, "");
+					link = link.replace(SqlConstants.NAME_TOKEN, objects[i].toLowerCase().trim());
+					link = link.replace(SqlConstants.DOC_TOKEN, "detail");
 					links = links + "\n" + link;
 				}
 				String resource = dbDocRes.CONTENTS_HTML;
@@ -140,9 +127,10 @@ public class DbDoc {
 			status = docFile.mkdirs();
 		}
 		if (status) {
-			String query = (String) dbDocRes.getSqlMap().get(OBJECTS);
-			query = query.replace(NAME_TOKEN, filterToSql());
-			query = query.replace(OBJECT_PARAM, "'" + objectUpperCase + "'");
+			String query = (String) dbDocRes.getSqlMap().get(SqlConstants.OBJECTS);
+			query = query.replace(SqlConstants.NAME_TOKEN, filterToSql());
+			query = query.replace(SqlConstants.OWNER_PARAM, "'" + getOwner() + "'");
+			query = query.replace(SqlConstants.OBJECT_PARAM, "'" + objectUpperCase + "'");
 			ResultSet rs = stmt.executeQuery(query);
 
 			System.out.println("Please wait. Saving " + objectLowerCase + " ...");
@@ -151,33 +139,37 @@ public class DbDoc {
 				String docHtmlTmp = dbDocRes.DOC_HTML;
 				String itemName = rs.getString(1);
 				String link = HREF;
-				link = link.replace(DIR_TOKEN, objectLowerCase + "/");
-				link = link.replace(NAME_TOKEN, itemName.toLowerCase());
-				link = link.replace(DOC_TOKEN, "doc");
+				link = link.replace(SqlConstants.DIR_TOKEN, objectLowerCase + "/");
+				link = link.replace(SqlConstants.NAME_TOKEN, itemName.toLowerCase());
+				link = link.replace(SqlConstants.DOC_TOKEN, "doc");
 				links = links + "\n" + link;
 
 				query = (String) dbDocRes.getSqlMap().get(objectUpperCase);
-				query = query.replace(NAME_PARAM, "'" + itemName + "'");
+				query = query.replace(SqlConstants.NAME_PARAM, "'" + itemName + "'");
+				query = query.replace(SqlConstants.OWNER_PARAM, "'" + getOwner() + "'");
 				String doc = getHtml(objectUpperCase, itemName, query);
-				if (objectUpperCase.equals(TABLE_OBJ)) {
-					if (dbDocRes.getSqlMap().containsKey(TABLE_COL_OBJ)) {
-						query = (String) dbDocRes.getSqlMap().get(TABLE_COL_OBJ);
-						query = query.replace(NAME_PARAM, "'" + itemName + "'");
-						doc = doc + getHtml(TABLE_COL_OBJ, itemName, query);
+				if (objectUpperCase.equals(SqlConstants.TABLE_OBJ)) {
+					if (dbDocRes.getSqlMap().containsKey(SqlConstants.TABLE_COL_OBJ)) {
+						query = (String) dbDocRes.getSqlMap().get(SqlConstants.TABLE_COL_OBJ);
+						query = query.replace(SqlConstants.NAME_PARAM, "'" + itemName + "'");
+						query = query.replace(SqlConstants.OWNER_PARAM, "'" + getOwner() + "'");
+						doc = doc + getHtml(SqlConstants.TABLE_COL_OBJ, itemName, query);
 					}
-					if (dbDocRes.getSqlMap().containsKey(TABLE_CON_OBJ)) {
-						query = (String) dbDocRes.getSqlMap().get(TABLE_CON_OBJ);
-						query = query.replace(NAME_PARAM, "'" + itemName + "'");
-						doc = doc + getHtml(TABLE_CON_OBJ, itemName, query);
+					if (dbDocRes.getSqlMap().containsKey(SqlConstants.TABLE_CON_OBJ)) {
+						query = (String) dbDocRes.getSqlMap().get(SqlConstants.TABLE_CON_OBJ);
+						query = query.replace(SqlConstants.NAME_PARAM, "'" + itemName + "'");
+						query = query.replace(SqlConstants.OWNER_PARAM, "'" + getOwner() + "'");
+						doc = doc + getHtml(SqlConstants.TABLE_CON_OBJ, itemName, query);
 					}
-					if (dbDocRes.getSqlMap().containsKey(TABLE_IND_OBJ)) {
-						query = (String) dbDocRes.getSqlMap().get(TABLE_IND_OBJ);
-						query = query.replace(NAME_PARAM, "'" + itemName + "'");
-						doc = doc + getHtml(TABLE_IND_OBJ, itemName, query);
+					if (dbDocRes.getSqlMap().containsKey(SqlConstants.TABLE_IND_OBJ)) {
+						query = (String) dbDocRes.getSqlMap().get(SqlConstants.TABLE_IND_OBJ);
+						query = query.replace(SqlConstants.NAME_PARAM, "'" + itemName + "'");
+						query = query.replace(SqlConstants.OWNER_PARAM, "'" + getOwner() + "'");
+						doc = doc + getHtml(SqlConstants.TABLE_IND_OBJ, itemName, query);
 					}
 				}
 				doc = "<h3>" + itemName + "</h3>" + doc + Converter.DBDOC_LINK;
-				dbDocRes.saveToFile(docDir + "/" + itemName.toLowerCase() + ".html", docHtmlTmp.replace(DOC_TOKEN, doc));
+				dbDocRes.saveToFile(docDir + "/" + itemName.toLowerCase() + ".html", docHtmlTmp.replace(SqlConstants.DOC_TOKEN, doc));
 			}
 			String resource = dbDocRes.CONTENTS_DETAIL_HTML;
 			resource = resource.replace("#HREF#", links);
@@ -193,12 +185,12 @@ public class DbDoc {
 	private String getHtml(String object, String name, String query) throws SQLException {
 		String header = "";
 		boolean isGetColumns = false;
-		if (object.equals(TABLE_COL_OBJ))
+		if (object.equals(SqlConstants.TABLE_COL_OBJ))
 			header = "Columns";
-		else if (object.equals(TABLE_CON_OBJ)) {
+		else if (object.equals(SqlConstants.TABLE_CON_OBJ)) {
 			header = "Constraints";
 			isGetColumns = true;
-		} else if (object.equals(TABLE_IND_OBJ)) {
+		} else if (object.equals(SqlConstants.TABLE_IND_OBJ)) {
 			header = "Indexes";
 			isGetColumns = true;
 		}
@@ -256,7 +248,6 @@ public class DbDoc {
 					tr = tr + "<tr class='alt'>" + td + "</tr>";
 				else
 					tr = tr + "<tr>" + td + "</tr>";
-
 			}
 			if (!tr.isEmpty())
 				doc = "<h3>" + header + "</h3><table id='smTable'><tbody><tr class='smth'>" + th + "</tr>" + tr + "</tbody></table><hr>";
@@ -267,17 +258,18 @@ public class DbDoc {
 	private String getColumnsHtml(String action, String name, String otherName) throws SQLException {
 		String columns = "";
 		String query = "";
-		if (action.equals(TABLE_CON_OBJ)) {
-			if (dbDocRes.getSqlMap().containsKey(TABLE_CON_COL_OBJ))
-				query = (String) dbDocRes.getSqlMap().get(TABLE_CON_COL_OBJ);
-		} else if (action.equals(TABLE_IND_OBJ)) {
-			if (dbDocRes.getSqlMap().containsKey(TABLE_IND_COL_OBJ))
-				query = (String) dbDocRes.getSqlMap().get(TABLE_IND_COL_OBJ);
+		if (action.equals(SqlConstants.TABLE_CON_OBJ)) {
+			if (dbDocRes.getSqlMap().containsKey(SqlConstants.TABLE_CON_COL_OBJ))
+				query = (String) dbDocRes.getSqlMap().get(SqlConstants.TABLE_CON_COL_OBJ);
+		} else if (action.equals(SqlConstants.TABLE_IND_OBJ)) {
+			if (dbDocRes.getSqlMap().containsKey(SqlConstants.TABLE_IND_COL_OBJ))
+				query = (String) dbDocRes.getSqlMap().get(SqlConstants.TABLE_IND_COL_OBJ);
 		}
 
 		if (!query.isEmpty()) {
-			query = query.replace(NAME_PARAM, "'" + name + "'");
-			query = query.replace(OTHER_NAME_PARAM, "'" + otherName + "'");
+			query = query.replace(SqlConstants.NAME_PARAM, "'" + name + "'");
+			query = query.replace(SqlConstants.OWNER_PARAM, "'" + getOwner() + "'");
+			query = query.replace(SqlConstants.OTHER_NAME_PARAM, "'" + otherName + "'");
 			ResultSet rs = stmtTmp.executeQuery(query);
 			while (rs.next()) {
 				if (columns.isEmpty())
@@ -307,6 +299,7 @@ public class DbDoc {
 	public String getObjects() {
 		return objects;
 	}
+
 	private void setObjects(String property) {
 		if (property == null || property.trim().isEmpty()) {
 			property = "";
@@ -317,6 +310,18 @@ public class DbDoc {
 	public String getFilter() {
 		return filter;
 	}
+
+	private void setOwner(String property) {
+		if (property == null || property.trim().isEmpty()) {
+			property = "";
+		}
+		owner = property.toUpperCase();
+	}
+
+	private String getOwner() {
+		return owner;
+	}
+
 	private void setFilter(String property) {
 		if (property == null || property.trim().isEmpty()) {
 			property = "";
@@ -325,11 +330,12 @@ public class DbDoc {
 	}
 
 	public int getViewId(String property) {
-		if (viewId == 2 && property.equals(PACKAGE_OBJ))
+		if (viewId == 2 && property.equals(SqlConstants.PACKAGE_OBJ))
 			return viewId;
 		else
 			return 1;
 	}
+
 	private void setViewId(String property) {
 		if (property == null || property.trim().isEmpty()) {
 			property = "2";
@@ -340,14 +346,15 @@ public class DbDoc {
 	public boolean isAllCommentsAsDoc() {
 		return allCommentsAsDoc;
 	}
+
 	private void setAllCommentsAsDoc(String property) {
 		if (property == null || property.trim().isEmpty()) {
 			property = "0";
 		}
-		if (property.trim().contentEquals("1"))
+		if (property.trim().equals("1"))
 			allCommentsAsDoc = true;
 		else
-			allCommentsAsDoc = false;
+			allCommentsAsDoc = Boolean.valueOf(property).booleanValue();;
 	}
 
 }
