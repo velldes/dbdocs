@@ -16,8 +16,8 @@ public class Converter {
 	private final static String	COMMENT_START	 = "/*";
 	private final static String	COMMENT_END	   = "*/";
 
-	private final static String	AS_MARK	       = "#AS#";
-	private final static String	AE_MARK	       = "#AE#";
+	private final static String	AS_MARK	       = "#APS#";
+	private final static String	AE_MARK	       = "#APE#";
 	private final static String	APOSTROPHE	   = "'";
 
 	private final static String	METHODS	       = "^.*\\bPROCEDURE\\b.*$|^.*\\bFUNCTION\\b.*$";

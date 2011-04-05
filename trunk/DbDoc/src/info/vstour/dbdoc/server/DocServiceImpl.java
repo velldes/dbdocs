@@ -38,16 +38,25 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 @SuppressWarnings("serial")
 public class DocServiceImpl extends RemoteServiceServlet implements DocService {
 
+	private String	owner;
+
 	public List<String> getTreeItems(String connName, String itemName, String search) {
 		List<String> items = new ArrayList<String>();
 		Connection connection = null;
 		Statement stmt = null;
 		try {
 			connection = ConnectionManager.get(connName).getConnection();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
 			if (connection != null) {
+				setOwner(ConnectionManager.get(connName).getOwner());
 				stmt = connection.createStatement();
 				String query = DbDocRes.get(connName).getSqlMap().get(SqlConstants.OBJECTS);
 				query = query.replace(SqlConstants.OBJECT_PARAM, "'" + itemName + "'");
+				query = query.replace(SqlConstants.OWNER_PARAM, "'" + getOwner() + "'");
 				query = query.replace(SqlConstants.NAME_TOKEN, filterToSql(search));
 				ResultSet rs = stmt.executeQuery(query);
 
@@ -81,24 +90,29 @@ public class DocServiceImpl extends RemoteServiceServlet implements DocService {
 		try {
 			connection = ConnectionManager.get(connName).getConnection();
 			if (connection != null) {
+				setOwner(ConnectionManager.get(connName).getOwner());
 				stmt = connection.createStatement();
 				String query = DbDocRes.get(connName).getSqlMap().get(parent.toUpperCase());
 				query = query.replace(SqlConstants.NAME_PARAM, "'" + child + "'");
+				query = query.replace(SqlConstants.OWNER_PARAM, "'" + getOwner() + "'");
 				doc = getHtml(stmt, parent, child, query);
 				if (parent.equals(SqlConstants.TABLE_OBJ)) {
 					if (DbDocRes.get(connName).getSqlMap().containsKey(SqlConstants.TABLE_COL_OBJ)) {
 						query = (String) DbDocRes.get(connName).getSqlMap().get(SqlConstants.TABLE_COL_OBJ);
 						query = query.replace(SqlConstants.NAME_PARAM, "'" + child + "'");
+						query = query.replace(SqlConstants.OWNER_PARAM, "'" + getOwner() + "'");
 						doc = doc + getHtml(stmt, SqlConstants.TABLE_COL_OBJ, child, query);
 					}
 					if (DbDocRes.get(connName).getSqlMap().containsKey(SqlConstants.TABLE_CON_OBJ)) {
 						query = (String) DbDocRes.get(connName).getSqlMap().get(SqlConstants.TABLE_CON_OBJ);
 						query = query.replace(SqlConstants.NAME_PARAM, "'" + child + "'");
+						query = query.replace(SqlConstants.OWNER_PARAM, "'" + getOwner() + "'");
 						doc = doc + getHtml(stmt, SqlConstants.TABLE_CON_OBJ, child, query);
 					}
 					if (DbDocRes.get(connName).getSqlMap().containsKey(SqlConstants.TABLE_IND_OBJ)) {
 						query = (String) DbDocRes.get(connName).getSqlMap().get(SqlConstants.TABLE_IND_OBJ);
 						query = query.replace(SqlConstants.NAME_PARAM, "'" + child + "'");
+						query = query.replace(SqlConstants.OWNER_PARAM, "'" + getOwner() + "'");
 						doc = doc + getHtml(stmt, SqlConstants.TABLE_IND_OBJ, child, query);
 					}
 				}
@@ -176,6 +190,8 @@ public class DocServiceImpl extends RemoteServiceServlet implements DocService {
 		int cols = rsDmd.getColumnCount();
 		String doc = "";
 		String acad = DbDocRes.get(DbDocRes.propsFileName).getProps().getProperty(PropsConstants.ALL_COMMENTS_AS_DOC);
+		if (acad.equals("1"))
+			acad = "true";
 		boolean isAllCommentsAsDoc = Boolean.valueOf(acad).booleanValue();
 		if (cols == 1) {
 			Converter.init();
@@ -250,6 +266,7 @@ public class DocServiceImpl extends RemoteServiceServlet implements DocService {
 
 		if (!query.isEmpty()) {
 			query = query.replace(SqlConstants.NAME_PARAM, "'" + name + "'");
+			query = query.replace(SqlConstants.OWNER_PARAM, "'" + getOwner() + "'");
 			query = query.replace(SqlConstants.OTHER_NAME_PARAM, "'" + otherName + "'");
 			ResultSet rs = stmtCol.executeQuery(query);
 			while (rs.next()) {
@@ -292,4 +309,11 @@ public class DocServiceImpl extends RemoteServiceServlet implements DocService {
 			return 1;
 	}
 
+	private void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	private String getOwner() {
+		return owner;
+	}
 }

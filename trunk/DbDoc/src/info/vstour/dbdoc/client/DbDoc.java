@@ -46,9 +46,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class DbDoc implements EntryPoint {
 
-	private final String	      UNIT	       = "px";
+	private final String	        UNIT	     = "px";
 	private final DocServiceAsync	docService	= GWT.create(DocService.class);
-	private ClientConstants	      constants	   = GWT.create(ClientConstants.class);
+	private ClientConstants	      constants	 = GWT.create(ClientConstants.class);
 	private String	              connName;
 
 	public void onModuleLoad() {
@@ -84,7 +84,7 @@ public class DbDoc implements EntryPoint {
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-			// TODO Auto-generated method stub
+				// TODO Auto-generated method stub
 			}
 		});
 
@@ -133,7 +133,7 @@ public class DbDoc implements EntryPoint {
 						}
 						@Override
 						public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
+							// TODO Auto-generated method stub
 
 						}
 					});
@@ -165,7 +165,7 @@ public class DbDoc implements EntryPoint {
 						}
 						@Override
 						public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
+							// TODO Auto-generated method stub
 						}
 					});
 
@@ -183,14 +183,7 @@ public class DbDoc implements EntryPoint {
 			public void onSelection(SelectionEvent<TreeItem> event) {
 				TreeItem item = event.getSelectedItem();
 
-				boolean isHasParent = false;
-				try {
-					item.getParentItem().getText();
-					isHasParent = true;
-				}
-				catch (Exception e) {}
-
-				if (isHasParent) {
+				if (item.getParentItem() != null) {
 					final String parent = item.getParentItem().getText();
 					String child = item.getText();
 					int index = propsListBox.getSelectedIndex();
