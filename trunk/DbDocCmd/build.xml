@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <project name="DbDoc" default="build" basedir=".">
 
-	<!-- Configure path to Libs -->
-	<!-- <property name="oracle.jdbc" location="C:/programs/eclipse-jee-galileo/plugins/oracle.database.driver.jdk14_10.2.0.1" />
-  -->
-	<property name="oracle.jdbc" location="C:/programs/eclipse-jee-helios/UserLibrary/oracle" />
-	<property name="dbdoc.lib" location="C:/programs/eclipse-jee-helios/workspace/DbDoc" />
+	<property name="user.lib" location="${eclipse.home}/UserLibraries" />
+	<property name="dbdoc.lib" location="${eclipse.home}/workspace/DbDoc" />
 
+  <!-- Configure path to Libs -->
 	<path id="project.class.path">
 		<pathelement location="bin" />
-		<pathelement location="${oracle.jdbc}/ojdbc14.jar" />
+		<pathelement location="${user.lib}/oracle/ojdbc5.jar" />
 		<pathelement location="${dbdoc.lib}/dbdoclib.jar" />
 	</path>
 
@@ -54,8 +52,8 @@
 	<target name="dbdoccmd_jar" description="Create a jar file">
 		<jar destfile="dbdoccmd.jar">
 			<manifest>
-				<attribute name="Class-Path" value="lib/dbdoclib.jar lib/ojdbc14.jar" />
-				<attribute name="Main-Class" value="Main" />
+				<attribute name="Class-Path" value="lib/dbdoclib.jar lib/ojdbc5.jar" />
+				<attribute name="Main-Class" value="info.vstour.dbdoc.Main" />
 			</manifest>
 			<zipfileset dir="bin" includes="*.class"  />
 			<zipfileset dir="bin/info/vstour/dbdoc" prefix="info/vstour/dbdoc"/>
@@ -65,9 +63,9 @@
 	<target name="dbdoccmd_zip" depends="dbdoccmd_jar" description="Create a zip file with libraries">
 		<zip destfile="dbdoccmd.zip">
 			<zipfileset file="dbdoccmd.jar" />
-			<zipfileset file="${oracle.jdbc}/ojdbc14.jar" prefix="lib" />
+			<zipfileset file="${user.lib}/oracle/ojdbc5.jar" prefix="lib" />
 			<zipfileset file="${dbdoc.lib}/dbdoclib.jar" prefix="lib" />
-			<zipfileset dir="bin/res" prefix="res" />
+			<zipfileset dir="bin/res" prefix="res" excludes="**/nocopy.*"/>
 		</zip>
 	</target>
 
