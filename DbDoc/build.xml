@@ -3,17 +3,17 @@
   <!-- Arguments to gwtc and devmode targets -->
   <property name="gwt.args" value="" />
 
-  <!-- Configure path to GWT SDK -->
-  <property name="gwt.sdk" location="c:/programs/eclipse-jee-helios/plugins/com.google.gwt.eclipse.sdkbundle.2.0.4_2.0.4.v201006301309/gwt-2.0.4" />
+  <!-- Configure path to GWT SDK -->  
+  <property name="gwt.sdk" location="${eclipse.home}/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.relr37v201110112027/gwt-2.4.0" />
   <!-- Configure path to Libs -->
-  <property name="oracle.jdbc" location="C:/programs/eclipse-jee-helios/UserLibrary/oracle" />
+  <property name="oracle.jdbc" location="${eclipse.home}/UserLibraries/oracle" />
 
   <path id="project.class.path">
     <pathelement location="war/WEB-INF/classes"/>
     <pathelement location="${gwt.sdk}/gwt-user.jar"/>
     <fileset dir="${gwt.sdk}" includes="gwt-dev*.jar"/>
     <!-- Add any additional non-server libs (such as JUnit) -->
-    <pathelement location="${oracle.jdbc}/ojdbc14.jar"/>
+    <pathelement location="${oracle.jdbc}/ojdbc5.jar"/>
   </path>
 
   <target name="res" description="Copy resources to WEB-INF/classes/res">
@@ -27,14 +27,13 @@
     <copy todir="war/WEB-INF/classes/res">
       <fileset dir="res" />
     </copy>
-</target>
-
+  </target>
 
 	<target name="libs" description="Copy libs to WEB-INF/lib">
     <mkdir dir="war/WEB-INF/lib" />
     <copy todir="war/WEB-INF/lib" file="${gwt.sdk}/gwt-servlet.jar" />
     <!-- Add any additional server libs that need to be copied -->
-    <copy todir="war/WEB-INF/lib" file="${oracle.jdbc}/ojdbc14.jar" />
+    <copy todir="war/WEB-INF/lib" file="${oracle.jdbc}/ojdbc5.jar" />
   </target>
 
   <target name="javac" depends="libs,res" description="Compile java source">
@@ -146,10 +145,12 @@ Test targets suppressed because -junit argument was not specified when running w
   <target name="build" depends="gwtc" description="Build this project" />
 
   <target name="war" depends="build" description="Create a war file">
-    <zip destfile="dbdoc.war" basedir="war"/>
+    <delete file="dbdoc.war" failonerror="false" />
+    <zip destfile="dbdoc.war" basedir="war" excludes="**/nocopy.*"/>
   </target>
-  	
+    
   <target name="dbdoclib" description="Create a library jar file">
+    <delete file="dbdoclib.jar" failonerror="false" />
     <zip destfile="dbdoclib.jar">
       <!--
     	<zipfileset dir="src/info/vstour/dbdoc/shared" prefix="info/vstour/dbdoc/shared"/>
