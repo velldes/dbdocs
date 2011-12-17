@@ -25,8 +25,9 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("doc")
 public interface DocService extends RemoteService {
-	List<String> getTreeItems(String connName, String itemName, String search);
-	String[] getObjects(String connName);
-	String[] getPropsList();
-	String getDoc(String connName, String parent, String child);
+  List<String> getTreeItems(String connName, String owner, String itemName, String search);
+  String[] getObjects(String connName);
+  String[] getOwners(String connName);
+  String[] getPropsList();
+  String getDoc(String connName, String owner, String parent, String child);
 }

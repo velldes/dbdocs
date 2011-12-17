@@ -2,6 +2,9 @@ package info.vstour.dbdoc.shared;
 
 public class SqlConstants {
 
+  // Prevents instantiation
+  private SqlConstants() {}
+
   public static final String OBJECTS           = "OBJECTS";
   public static final String DETAILS           = "DETAILS";
   public static final String PACKAGE_OBJ       = "PACKAGE";
