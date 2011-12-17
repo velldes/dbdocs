@@ -1,3 +1,10 @@
+== Version 1.0 ==
+New features for DbDoc and DbDocCmd:
+ * Get documentation for several owners for one database user. You can set up comma separated list of owners in properties file.
+New features for DbDoc:
+ * Local documentation cache
+ * Processing indicator
+
 == Version 0.2 ==
   * Added owner
   * small fixes
