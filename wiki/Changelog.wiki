@@ -1,5 +1,5 @@
 == Version 1.0 ==
- * Crete documentation for several owners for one database user. You can set up comma separated list of owners in properties file. 
+ * Create documentation for several owners for one database user. You can set up comma separated list of owners in properties file. 
 DbDoc:
  * Local documentation cache
  * Processing indicator
